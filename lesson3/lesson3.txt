@@ -1,0 +1,63 @@
+
+1-2. Установил на ubuntu mysql и persona по инструкции на сайте, создал пользователя 'user', перенес структуру данных в базу highload, с помощью workbench так же подконектился;
+
+anton@anton-VirtualBox:~$ mysql -u 'user' -h localhost -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 14
+Server version: 8.0.21-0ubuntu0.20.04.4 (Ubuntu)
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| highload           |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use highload;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+Database changed
+
+mysql> show tables;
++--------------------+
+| Tables_in_highload |
++--------------------+
+| customers          |
+| employees          |
+| offices            |
+| orderdetails       |
+| orders             |
+| payments           |
+| productlines       |
+| products           |
+| productvariants    |
++--------------------+
+9 rows in set (0.00 sec)
+
+
+3. Какие ситуации, вызывающие рост количества запросов, могут случаться на сервере?
+    Не правильно построенные запросы, когда вместо одного, могут быть выполнены много мелких, а операции по их обработке лягут на код.
+    Не применение кеша.
+    Не оптимальная архитектура кода для работы с бд.
+
+4. В каких случаях индекс в MySQL не будет применятся, даже если он доступен и выборка должна использовать его?
+    Если использование индекса требует от MySQL прохода более чем по 30% строк в данной таблице (в таких случаях просмотр таблицы,
+        по всей видимости, окажется намного быстрее, так как потребуется выполнить меньше операций поиска).
+        Следует учитывать, что если подобный запрос использует LIMIT по отношению только к извлекаемой части строк,
+        то MySQL будет применять индекс в любом случае, так как небольшое количество строк можно найти намного быстрее, чтобы вернуть результат.
+
+    Если диапазон изменения индекса может содержать величины NULL при использовании выражений ORDER BY ... DESC.
+
+5. Как я понял через USE INDEX.
