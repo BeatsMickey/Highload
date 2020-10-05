@@ -1,0 +1,47 @@
+anton@anton-VirtualBox:~$ sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+# ID сервера
+server-id = 1
+# Путь к бинарному логу
+log_bin = mysql-bin.log
+# Название базы данных
+binlog_do_db = highload
+
+
+anton@anton-VirtualBox:~$ sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+# ID Слейва
+server-id = 2
+# Путь к relay-логу
+relay-log = mysql-relay-bin.log
+# Путь к bin-логу на мастере
+log_bin = mysql-bin.log
+# База данных для репликации
+replicate_do_db = highload
+
+
+
+
+mysql> show master status;
++------------------+----------+--------------+------------------+-------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |
++------------------+----------+--------------+------------------+-------------------+
+| mysql-bin.000004 |      156 | highload     |                  |                   |
++------------------+----------+--------------+------------------+-------------------+
+
+
+
+mysql> show slave status\G
+*************************** 1. row ***************************
+               Slave_IO_State: Connecting to master
+                  Master_Host: 10.1.2.4
+                  Master_User: slave_user
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000004
+          Read_Master_Log_Pos: 156
+               Relay_Log_File: mysql-relay-bin.000002
+                Relay_Log_Pos: 4
+        Relay_Master_Log_File: mysql-bin.000002
+             Slave_IO_Running: Connecting
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: highload
+
