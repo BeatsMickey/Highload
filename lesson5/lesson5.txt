@@ -1,0 +1,49 @@
+1. Развернуть механизмы кеширования на виртуальной машине.
+
+anton@anton-VirtualBox:~$ systemctl status memcached
+● memcached.service - memcached daemon
+     Loaded: loaded (/lib/systemd/system/memcached.service; enabled; vendor pre>
+     Active: active (running) since Thu 2020-10-08 13:28:47 MSK; 18min ago
+       Docs: man:memcached(1)
+   Main PID: 2675 (memcached)
+      Tasks: 10 (limit: 2319)
+     Memory: 1.5M
+     CGroup: /system.slice/memcached.service
+             └─2675 /usr/bin/memcached -m 64 -p 11211 -u memcache -l 127.0.0.1 >
+окт 08 13:28:47 anton-VirtualBox systemd[1]: Started memcached daemon.
+
+index.php
+-----------------------------
+$m = new Memcached();
+$m->addServer('localhost', 11211);
+$m->set('int', 99);
+var_dump($m->get('int'));
+-----------------------------
+
+Вывод в браузере:
+/var/www/html/index.php:24:int 99
+
+
+2. Реализовать схему загрузки данных из Redis (без Memcached в NGINX) согласно иллюстрации в главе «Что выбрать».
+    Замерить производительность страницы без кеша и с ним.
+
+anton@anton-VirtualBox:~$ service redis status
+● redis-server.service - Advanced key-value store
+     Loaded: loaded (/lib/systemd/system/redis-server.service; enabled; vendor >
+     Active: active (running) since Thu 2020-10-08 14:42:01 MSK; 2min 29s ago
+       Docs: http://redis.io/documentation,
+             man:redis-server(1)
+   Main PID: 21873 (redis-server)
+      Tasks: 4 (limit: 2319)
+     Memory: 1.8M
+     CGroup: /system.slice/redis-server.service
+             └─21873 /usr/bin/redis-server 127.0.0.1:6379
+окт 08 14:42:01 anton-VirtualBox systemd[1]: Starting Advanced key-value store.>
+окт 08 14:42:01 anton-VirtualBox systemd[1]: redis-server.service: Can't open P>
+окт 08 14:42:01 anton-VirtualBox systemd[1]: Started Advanced key-value store.
+
+код PHP находится в отдельном файле.
+
+Выводы: при выборке одной записи с локального серва, разница во времени работы скрипта - без Redis 0.00094318389892578, с Redis 0.00035905838012695,
+    если убрать сериализацию еще чуть быстрее 0.00029706954956055.
+
