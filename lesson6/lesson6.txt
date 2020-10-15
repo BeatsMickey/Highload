@@ -1,0 +1,50 @@
+1. Построить NGINX-балансировку между двумя виртуальными машинами. Доказать, что балансировка происходит.
+
+Т.к. у меня оба вебсервера рабоатали через связку apache2 и nginx, на стандратных портах, прописал таким образом:
+
+anton@anton-VirtualBox:~$ nano /etc/nginx/conf.d/upstream.conf
+upstream backend {
+  server localhost:8081;
+  server 192.168.1.116:80;
+}
+
+server {
+  listen 80;
+  server_name mysite.local;
+
+  location / {
+    proxy_pass  http://backend;
+  }
+}
+
+В файле index.php 1-ого сервера прописал echo "сервер 1", у второго echo "сервер 2", при перезагрузках страницы поочерди выдавался, то один, то второй результат.
+
+2. Реализовать альтернативное хранение сессий в Memcached.
+
+В /etc/memcached.conf установил не локальные айпишники, что бы можно было к серверу обратиться из вне.
+
+В php.ini вписал:
+[Session]
+session.save_handler = memcache
+session.save_path = "tcp://192.168.1.196:11211,tcp://192.168.1.116:11211"
+
+В файле index.php обоих серверов вписал
+
+session_start();
+if (!isset($_SESSION['count'])) {
+  $_SESSION['count'] = 0;
+} else {
+  $_SESSION['count']++;
+}
+var_dump($_SESSION['count']);
+
+И поскольку, после балансировки нагрузки, на два сервера кидало по очереди, счетчик обновлялся после каждой перезагрузки страницы, подтверждая то,
+ что хранилище сессий общее для двух машин.
+
+
+3. Настроить NGINX для работы с символьной ссылкой.
+
+Создал ссылку
+anton@anton-VirtualBox:~$ ln -s /var/www/html /var/www/production/
+
+В /etc/nginx/sites-available/default прописал новый root - /var/www/production;
