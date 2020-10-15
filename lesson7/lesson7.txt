@@ -1,0 +1,15 @@
+1. Установить RabbitMQ.
+anton@anton-VirtualBox:~$ sudo rabbitmqctl version
+[sudo] пароль для anton:
+3.8.2
+
+2. Создать несколько очередей.
+Создавал через веб интерфейс, подтверждение через консоль:
+anton@anton-VirtualBox:~$ sudo rabbitmqctl status
+Totals
+Connection count: 0
+Queue count: 2
+Virtual host count: 1
+
+3. Реализовать цепочку «Заказ еды — оплата — доставка — отзыв клиента». Сколько понадобится очереде?
+    3 Очереди, если я верно понял.
