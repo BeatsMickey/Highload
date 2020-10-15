@@ -1,0 +1,35 @@
+Сразу ставил на связку nginx и fpm.
+
+На первую машину - сервер и агент:
+anton@anton-VirtualBox:~$ sudo systemctl status zabbix-server
+● zabbix-server.service - Zabbix Server
+     Loaded: loaded (/lib/systemd/system/zabbix-server.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2020-10-15 14:53:10 MSK; 1h 13min ago
+    Process: 24385 ExecStart=/usr/sbin/zabbix_server -c $CONFFILE (code=exited, status=0/SUCCESS)
+   Main PID: 24395 (zabbix_server)
+      Tasks: 38 (limit: 2319)
+     Memory: 82.7M
+anton@anton-VirtualBox:~$ sudo systemctl status zabbix-agent
+● zabbix-agent.service - Zabbix Agent
+     Loaded: loaded (/lib/systemd/system/zabbix-agent.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2020-10-15 14:53:13 MSK; 1h 16min ago
+    Process: 24456 ExecStart=/usr/sbin/zabbix_agentd -c $CONFFILE (code=exited, status=0/SUCCESS)
+   Main PID: 24459 (zabbix_agentd)
+      Tasks: 6 (limit: 2319)
+     Memory: 9.6M
+
+
+На вторую машину - агент:
+anton@anton-VirtualBox:~$ sudo systemctl status zabbix-agent
+● zabbix-agent.service - Zabbix Agent
+     Loaded: loaded (/lib/systemd/system/zabbix-agent.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2020-10-15 16:01:07 MSK; 6min ago
+    Process: 32147 ExecStart=/usr/sbin/zabbix_agentd -c $CONFFILE (code=exited, status=0/SUCCESS)
+   Main PID: 32161 (zabbix_agentd)
+      Tasks: 6 (limit: 2319)
+     Memory: 5.1M
+
+Шаблон мониторинга HTTP-соединений уже был добавлен.
+
+Скриншот веб-интерфейса приложу в комментариях.
+
